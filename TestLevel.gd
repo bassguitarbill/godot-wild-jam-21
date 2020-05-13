@@ -14,10 +14,8 @@ func _on_Player_fire_grapple(pos, velocity):
 	grapple.set_velocity(velocity)
 	add_child(grapple)
 	grapple.connect("body_entered", self, "on_grapple_hit")
-	print(grapple)
 
 func on_grapple_hit(_body):
-	print("Grapple hit ", grapple.position)
 	create_chain(grapple.position, player.position)
 	grapple.queue_free()
 	grapple = null
@@ -30,10 +28,10 @@ func create_chain(start_pos, end_pos):
 	var current_node = StaticBody2D.new()
 	current_node.position = start_pos
 	$ChainPieces.add_child(current_node, true)
-	var current_node_pos = start_pos
+	var current_node_pos = start_pos.move_toward(end_pos, link_length / 2)
 	while remaining_length > link_length:
 		var link = ChainLink.instance()
-		link.position = current_node_pos.move_toward(end_pos, link_length / 2)
+		link.position = current_node_pos.move_toward(end_pos, 3 + (link_length / 2))
 		link.rotation = chain_angle + (PI / 2)
 		$ChainPieces.add_child(link, true)
 		#$ChainPieces.call_deferred("add_child", link, true)

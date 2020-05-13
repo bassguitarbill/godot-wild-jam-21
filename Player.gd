@@ -54,4 +54,3 @@ func fire_grapple():
 	var grapple_position = grapple_vector * 75.0
 	var grapple_velocity = grapple_vector * 700.0
 	emit_signal("fire_grapple", grapple_position, grapple_velocity)
-	print("fired grapple")
