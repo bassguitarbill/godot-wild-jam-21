@@ -1,16 +1,18 @@
-extends KinematicBody2D
+extends RigidBody2D
 
-onready var raycast = $RayCast2D
+signal fire_grapple
+signal start_aiming_grapple
 
-export var grapple_angle_speed = 3.0
+onready var raycast : RayCast2D = $RayCast2D
 
-var Grapple = preload("res://Grapple.tscn")
+export var grapple_angle_speed : float = 3.0
 
-var grapple_aiming = false
-var grapple_pressed = false
-var other_button_pressed = false
-var grapple_angle = PI * 3 / 2
-var grapple_aim_direction = -1
+
+var grapple_aiming : bool = false
+var grapple_pressed : bool = false
+var other_button_pressed : bool = false
+var grapple_angle : float = PI * 3 / 2
+var grapple_aim_direction : int = -1
 
 func _ready():
 	raycast.enabled = false
@@ -42,17 +44,14 @@ func process_grapple(delta):
 			fire_grapple()
 	else:
 		if grapple_pressed:
+			emit_signal("start_aiming_grapple")
 			grapple_aiming = true
 			grapple_angle = PI * 3 / 2
 			raycast.enabled = true
 
 func fire_grapple():
 	var grapple_vector = Vector2(-1 * sin(grapple_angle), cos(grapple_angle))
-	var grapple = Grapple.instance()
-	grapple.position = grapple_vector * 75.0
-	grapple.apply_central_impulse(grapple_vector * 700.0)
-	add_child(grapple)
-	grapple.connect("body_entered", self, "on_grapple_hit")
-	
-func on_grapple_hit(body):
-	print(body)
+	var grapple_position = grapple_vector * 75.0
+	var grapple_velocity = grapple_vector * 700.0
+	emit_signal("fire_grapple", grapple_position, grapple_velocity)
+	print("fired grapple")
