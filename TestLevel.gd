@@ -47,7 +47,7 @@ func create_chain(start_pos, end_pos):
 		current_node = link
 	var joint = PinJoint2D.new()
 	joint.set_node_a("../" + current_node.name)
-	joint.set_node_b("../" + player.name)
+	joint.set_node_b("../../" + player.name)
 	joint.position = current_node_pos
 	joint.disable_collision = true
 	$ChainPieces.add_child(joint)
