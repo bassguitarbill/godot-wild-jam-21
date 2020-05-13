@@ -4,9 +4,15 @@ onready var player = $Player
 
 var Grapple = preload("res://Grapple.tscn")
 var ChainLink = preload("res://ChainLink.tscn")
+var Chain = preload("res://Chain.tscn")
 var grapple
 
 const link_length = 30.0
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == BUTTON_LEFT:
+			player.position = event.position
 
 func _on_Player_fire_grapple(pos, velocity):
 	grapple = Grapple.instance()
@@ -16,11 +22,17 @@ func _on_Player_fire_grapple(pos, velocity):
 	grapple.connect("body_entered", self, "on_grapple_hit")
 
 func on_grapple_hit(_body):
-	create_chain(grapple.position, player.position)
+	create_chain(grapple.position, player)
 	grapple.queue_free()
 	grapple = null
 
-func create_chain(start_pos, end_pos):
+func create_chain(grapple_point, p):
+	var chain = Chain.instance()
+	chain.player = p
+	chain.grapple_point = grapple_point
+	add_child(chain)
+
+func create_chain_old(start_pos, end_pos):
 	var chain = end_pos - start_pos
 	var chain_angle = chain.angle()
 	var chain_length = chain.length()
